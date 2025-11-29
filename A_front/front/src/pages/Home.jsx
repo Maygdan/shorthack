@@ -20,15 +20,9 @@ function Home() {
         <div className="home-header-content">
           <X5Logo size="medium" />
           <nav className="home-nav">
-            {userRole === 'STUDENT' && (
-              <>
-                <a href="/events">Мероприятия</a>
-                <a href="/merch">Магазин мерча</a>
-              </>
-            )}
-            {userRole === 'MANAGER' && (
-              <a href="/analytics">Аналитика</a>
-            )}
+            <a href="/events">Мероприятия</a>
+            <a href="/merch">Магазин мерча</a>
+            <a href="/analytics">Аналитика</a>
             <button onClick={handleLogout} className="home-logout-btn">
               Выход
             </button>
@@ -48,34 +42,12 @@ function Home() {
             Развивайтесь вместе с нами!
           </p>
           <div className="home-cta">
-            {userRole === 'STUDENT' ? (
-              <>
-                <button onClick={() => navigate('/events')} className="btn btn-primary btn-large">
-                  Перейти к мероприятиям
-                </button>
-                <button onClick={() => navigate('/events')} className="btn btn-secondary btn-large">
-                  Мой профиль
-                </button>
-              </>
-            ) : userRole === 'MANAGER' ? (
-              <>
-                <button onClick={() => navigate('/analytics')} className="btn btn-primary btn-large">
-                  Аналитика
-                </button>
-                <button onClick={() => navigate('/events')} className="btn btn-secondary btn-large">
-                  Мероприятия
-                </button>
-              </>
-            ) : (
-              <>
-                <button onClick={() => navigate('/events')} className="btn btn-primary btn-large">
-                  Я студент
-                </button>
-                <button onClick={() => navigate('/analytics')} className="btn btn-secondary btn-large">
-                  Я менеджер
-                </button>
-              </>
-            )}
+            <button onClick={() => navigate('/events')} className="btn btn-primary btn-large">
+              Перейти к мероприятиям
+            </button>
+            <button onClick={() => navigate('/analytics')} className="btn btn-secondary btn-large">
+              Аналитика
+            </button>
           </div>
         </div>
       </section>

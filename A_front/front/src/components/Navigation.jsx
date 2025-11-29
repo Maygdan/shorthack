@@ -21,22 +21,13 @@ function Navigation() {
           <X5Logo size="medium" />
         </Link>
         <nav className="navigation-nav">
-          {userRole === 'STUDENT' && (
-            <>
-              <Link to="/events">Мероприятия</Link>
-              <Link to="/merch">Магазин мерча</Link>
-              {userPoints > 0 && (
-                <span className="navigation-points">
-                  {userPoints} баллов
-                </span>
-              )}
-            </>
-          )}
-          {userRole === 'MANAGER' && (
-            <>
-              <Link to="/analytics">Аналитика</Link>
-              <Link to="/events">Мероприятия</Link>
-            </>
+          <Link to="/events">Мероприятия</Link>
+          <Link to="/merch">Магазин мерча</Link>
+          <Link to="/analytics">Аналитика</Link>
+          {userPoints > 0 && (
+            <span className="navigation-points">
+              {userPoints} баллов
+            </span>
           )}
           <button onClick={handleLogout} className="navigation-logout-btn">
             Выход
