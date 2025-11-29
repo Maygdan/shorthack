@@ -1,7 +1,12 @@
-import Form from "../components/Form"
+import Form from "../components/Form";
 
 function Login() {
-    return <Form route="/api/login/" method="login" />
+  const handleLogin = (data) => {
+    localStorage.setItem('userRole', data.user.user_type);
+  };
+
+  return <Form route="/api/login/" method="login" onLogin={handleLogin} />;
 }
 
-export default Login
+export default Login;
+

@@ -1,3 +1,4 @@
+
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -7,7 +8,7 @@ from django.utils import timezone
 from .models import CustomUser, Event, Quiz, QuizQuestion, QuizAnswer, EventParticipation, Feedback
 from .serializers import UserSerializer, EventSerializer, QuizSerializer, QuizQuestionSerializer
 from .serializers import EventParticipationSerializer, FeedbackSerializer
-from rest_framework.permissions import AllowAny,IsAuthenticated
+from rest_framework.permissions import AllowAny
 
 class RegisterView(generics.CreateAPIView):
     queryset = CustomUser.objects.all()
@@ -23,14 +24,13 @@ class RegisterView(generics.CreateAPIView):
         refresh = RefreshToken.for_user(user)
         return Response({
             'user': serializer.data,
-            'token': {
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
-            }
+            'access': str(refresh.access_token),
+            'refresh': str(refresh),
         }, status=status.HTTP_201_CREATED)
 
-class LoginView(APIView):    
+class LoginView(APIView):
     permission_classes = [AllowAny]
+    
     def post(self, request):
         username = request.data.get('username')
         password = request.data.get('password')
@@ -41,10 +41,8 @@ class LoginView(APIView):
             refresh = RefreshToken.for_user(user)
             return Response({
                 'user': UserSerializer(user).data,
-                'token': {
-                    'refresh': str(refresh),
-                    'access': str(refresh.access_token),
-                }
+                'access': str(refresh.access_token),
+                'refresh': str(refresh),
             })
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -277,4 +275,5 @@ class ManagerAnalyticsView(APIView):
             'total_completions': total_completions,
             'average_completion_rate': f"{(total_completions / total_views * 100):.1f}%" if total_views > 0 else "0%",
             'recent_events': EventSerializer(events.order_by('-created_at')[:5], many=True).data
+
         })
