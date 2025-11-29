@@ -316,6 +316,127 @@
   }
 }
 
+/* Мини-игра */
+.minigame-container {
+  margin-top: 40px;
+}
+
+.minigame-start {
+  background-color: var(--x5-white);
+  border: 2px solid var(--x5-gray-light);
+  border-radius: var(--radius-xl);
+  padding: 40px 36px;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+}
+
+.minigame-start h2 {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--x5-black);
+  margin-bottom: 24px;
+}
+
+.minigame-instructions {
+  font-size: 18px;
+  color: var(--x5-gray-dark);
+  line-height: 1.7;
+  margin-bottom: 32px;
+  text-align: left;
+}
+
+.minigame-content {
+  background-color: var(--x5-white);
+  border: 2px solid var(--x5-gray-light);
+  border-radius: var(--radius-xl);
+  padding: 40px 36px;
+  box-shadow: var(--shadow-md);
+}
+
+.minigame-content h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--x5-black);
+  margin-bottom: 20px;
+}
+
+/* Thank you container */
+.thank-you-container {
+  background: linear-gradient(135deg, var(--x5-green-lighter) 0%, var(--x5-white) 100%);
+  border: 2px solid var(--x5-green);
+  border-radius: var(--radius-xl);
+  padding: 48px 40px;
+  text-align: center;
+  margin: 40px 0;
+  box-shadow: var(--shadow-lg);
+}
+
+.thank-you-container h2 {
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--x5-black);
+  margin-bottom: 16px;
+}
+
+.thank-you-container p {
+  font-size: 18px;
+  color: var(--x5-gray-dark);
+  font-weight: 500;
+}
+
+/* Loading and error states */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120px 20px;
+  min-height: 400px;
+}
+
+.loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid var(--x5-gray-light);
+  border-top-color: var(--x5-green);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 24px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-container p {
+  font-size: 16px;
+  color: var(--x5-gray);
+  font-weight: 500;
+}
+
+.error-message {
+  text-align: center;
+  padding: 80px 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.error-message h3 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--x5-red);
+  margin-bottom: 16px;
+}
+
+.error-message p {
+  font-size: 16px;
+  color: var(--x5-gray);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
 /* Адаптивность */
 @media (max-width: 768px) {
   .event-container {

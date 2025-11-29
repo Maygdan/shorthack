@@ -1,0 +1,410 @@
+/* Страница системы баллов в стиле X5 */
+
+.points-system-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 64px 24px;
+  min-height: calc(100vh - 200px);
+  animation: fadeIn 0.6s ease-out;
+}
+
+.points-system-header {
+  text-align: center;
+  margin-bottom: 64px;
+  padding-bottom: 40px;
+  border-bottom: 2px solid var(--x5-gray-light);
+}
+
+.points-system-header h1 {
+  font-size: 48px;
+  font-weight: 800;
+  color: var(--x5-black);
+  margin-bottom: 32px;
+  letter-spacing: -1.5px;
+  line-height: 1.1;
+}
+
+.points-display-large {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 20px 40px;
+  background: linear-gradient(135deg, var(--x5-green) 0%, var(--x5-green-dark) 100%);
+  border-radius: var(--radius-full);
+  color: var(--x5-white);
+  box-shadow: var(--shadow-lg);
+}
+
+.points-label-large {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.points-value-large {
+  font-size: 48px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.points-unit {
+  font-size: 18px;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.points-content {
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+}
+
+.points-section {
+  background-color: var(--x5-white);
+  border: 1px solid var(--x5-gray-light);
+  border-radius: var(--radius-xl);
+  padding: 48px 40px;
+  box-shadow: var(--shadow-sm);
+}
+
+.points-section h2 {
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--x5-black);
+  margin-bottom: 24px;
+  letter-spacing: -0.5px;
+}
+
+.section-description {
+  font-size: 18px;
+  color: var(--x5-gray);
+  line-height: 1.7;
+  margin-bottom: 40px;
+  font-weight: 500;
+}
+
+/* Как зарабатывать баллы */
+.earn-points-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 32px;
+  margin-top: 32px;
+}
+
+.earn-points-card {
+  background: linear-gradient(135deg, var(--x5-green-lighter) 0%, var(--x5-white) 100%);
+  border: 2px solid var(--x5-gray-light);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  text-align: center;
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  align-items: center;
+}
+
+.earn-points-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--x5-green);
+}
+
+.earn-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+  line-height: 1;
+}
+
+.earn-points-card h3 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--x5-black);
+  margin-bottom: 16px;
+}
+
+.earn-points-card p {
+  font-size: 16px;
+  color: var(--x5-gray-dark);
+  line-height: 1.6;
+  margin-bottom: 24px;
+  flex-grow: 1;
+}
+
+.points-example {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 16px 20px;
+  background-color: var(--x5-white);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--x5-green-light);
+  width: 100%;
+  max-width: 280px;
+  margin: 0 auto;
+}
+
+.points-amount {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--x5-green-dark);
+  line-height: 1.2;
+  text-align: center;
+}
+
+.points-label-small {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--x5-gray);
+  text-transform: lowercase;
+  text-align: center;
+}
+
+/* Что можно купить */
+.merch-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.merch-preview-card {
+  background-color: var(--x5-gray-lighter);
+  border: 1px solid var(--x5-gray-light);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  text-align: center;
+  transition: var(--transition);
+}
+
+.merch-preview-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+  border-color: var(--x5-green);
+}
+
+.merch-preview-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  background-color: var(--x5-green-light);
+  color: var(--x5-green-dark);
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.merch-preview-card h4 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--x5-black);
+  margin-bottom: 12px;
+}
+
+.merch-preview-price {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px;
+}
+
+.merch-preview-price .price-value {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--x5-green-dark);
+}
+
+.merch-preview-price .price-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--x5-gray);
+  text-transform: lowercase;
+}
+
+.view-store-btn {
+  text-align: center;
+  margin-top: 32px;
+}
+
+.loading-merch {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--x5-gray-light);
+  border-top-color: var(--x5-green);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 16px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.empty-merch {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--x5-gray);
+}
+
+/* Кнопки действий */
+.actions-section {
+  background: linear-gradient(135deg, var(--x5-green-lighter) 0%, var(--x5-white) 100%);
+  border: 2px solid var(--x5-green-light);
+}
+
+.action-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 32px;
+  margin-top: 32px;
+}
+
+.action-btn {
+  background-color: var(--x5-white);
+  border: 2px solid var(--x5-gray-light);
+  border-radius: var(--radius-xl);
+  padding: 40px 32px;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+.action-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--x5-green) 0%, var(--x5-green-dark) 100%);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.action-btn:hover::before {
+  transform: scaleX(1);
+}
+
+.action-btn:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--x5-green);
+}
+
+.quiz-btn:hover {
+  background: linear-gradient(135deg, var(--x5-green-lighter) 0%, var(--x5-white) 100%);
+}
+
+.minigame-btn:hover {
+  background: linear-gradient(135deg, var(--x5-green-lighter) 0%, var(--x5-white) 100%);
+}
+
+.action-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+  line-height: 1;
+}
+
+.action-btn h3 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--x5-black);
+  margin-bottom: 12px;
+}
+
+.action-btn p {
+  font-size: 16px;
+  color: var(--x5-gray);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.action-arrow {
+  display: inline-block;
+  font-size: 24px;
+  color: var(--x5-green);
+  font-weight: 700;
+  transition: var(--transition);
+}
+
+.action-btn:hover .action-arrow {
+  transform: translateX(8px);
+}
+
+/* Адаптивность */
+@media (max-width: 1024px) {
+  .earn-points-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+  
+  .action-buttons {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .points-system-container {
+    padding: 40px 16px;
+  }
+  
+  .points-system-header h1 {
+    font-size: 36px;
+  }
+  
+  .points-display-large {
+    flex-direction: column;
+    gap: 8px;
+    padding: 20px 32px;
+  }
+  
+  .points-value-large {
+    font-size: 36px;
+  }
+  
+  .points-section {
+    padding: 32px 24px;
+  }
+  
+  .points-section h2 {
+    font-size: 28px;
+  }
+  
+  .earn-points-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  
+  .merch-preview-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 16px;
+  }
+  
+  .action-buttons {
+    gap: 20px;
+  }
+  
+  .action-btn {
+    padding: 32px 24px;
+  }
+  
+  .action-icon {
+    font-size: 48px;
+  }
+  
+  .action-btn h3 {
+    font-size: 24px;
+  }
+}
+

@@ -4,8 +4,8 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.utils import timezone
 from django.db import models
-from .models import CustomUser, Event, Quiz, QuizQuestion, QuizAnswer, EventParticipation, Feedback, Minigame, PointTransaction
-from .serializers import UserSerializer, EventSerializer, QuizSerializer, FeedbackSerializer, MinigameSerializer
+from .models import CustomUser, Event, Quiz, QuizQuestion, QuizAnswer, EventParticipation, Feedback, Minigame, PointTransaction, Merchandise, MerchOrder
+from .serializers import UserSerializer, EventSerializer, QuizSerializer, FeedbackSerializer, MinigameSerializer, MerchandiseSerializer, MerchOrderSerializer
 from rest_framework.permissions import AllowAny
 
 class RegisterView(generics.CreateAPIView):
@@ -276,6 +276,48 @@ class FeedbackView(APIView):
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class CompletedEventsView(APIView):
+    """Получить список завершенных мероприятий студента"""
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get(self, request):
+        if request.user.user_type != 'STUDENT':
+            return Response({'error': 'Only students can view completed events'}, 
+                           status=status.HTTP_403_FORBIDDEN)
+        
+        # Получаем все завершенные мероприятия студента
+        participations = EventParticipation.objects.filter(
+            student=request.user,
+            completed=True
+        ).select_related('event')
+        
+        events = [participation.event for participation in participations]
+        
+        # Исключаем мероприятия, на которые уже оставлен отзыв
+        events_with_feedback = Feedback.objects.filter(
+            student=request.user
+        ).values_list('event_id', flat=True)
+        
+        events = [event for event in events if event.id not in events_with_feedback]
+        
+        return Response({
+            'events': EventSerializer(events, many=True).data
+        })
+
+class MyFeedbacksView(APIView):
+    """Получить все отзывы студента"""
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get(self, request):
+        if request.user.user_type != 'STUDENT':
+            return Response({'error': 'Only students can view their feedbacks'}, 
+                           status=status.HTTP_403_FORBIDDEN)
+        
+        feedbacks = Feedback.objects.filter(student=request.user).order_by('-created_at')
+        return Response({
+            'feedbacks': FeedbackSerializer(feedbacks, many=True).data
+        })
+
 class ManagerAnalyticsView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     
@@ -315,10 +357,144 @@ class ManagerAnalyticsView(APIView):
         total_views = events.aggregate(models.Sum('views_count'))['views_count__sum'] or 0
         total_completions = events.aggregate(models.Sum('completion_count'))['completion_count__sum'] or 0
         
+        # Метрики по квизам
+        quiz_events = events.filter(event_type='QUIZ')
+        quiz_participations = EventParticipation.objects.filter(
+            event__in=quiz_events
+        )
+        
+        total_quiz_attempts = quiz_participations.count()
+        successful_quiz_attempts = quiz_participations.filter(completed=True).count()
+        failed_quiz_attempts = quiz_participations.filter(completed=False).count()
+        
+        # Количество новых пользователей (студентов, зарегистрированных впервые)
+        # Можно считать всех студентов или только тех, кто участвовал в мероприятиях менеджера
+        students_participated = CustomUser.objects.filter(
+            participations__event__in=events
+        ).distinct().count()
+        
+        # Общее количество студентов в системе
+        total_students = CustomUser.objects.filter(user_type='STUDENT').count()
+        
         return Response({
             'total_events': total_events,
             'total_views': total_views,
             'total_completions': total_completions,
             'average_completion_rate': f"{(total_completions / total_views * 100):.1f}%" if total_views > 0 else "0%",
-            'recent_events': EventSerializer(events.order_by('-created_at')[:5], many=True).data
+            'recent_events': EventSerializer(events.order_by('-created_at')[:5], many=True).data,
+            # Метрики по квизам
+            'total_quiz_attempts': total_quiz_attempts,
+            'successful_quiz_attempts': successful_quiz_attempts,
+            'failed_quiz_attempts': failed_quiz_attempts,
+            # Метрики по пользователям
+            'total_students': total_students,
+            'students_participated': students_participated
         })
+
+class MerchandiseListView(generics.ListAPIView):
+    """Список доступного мерча"""
+    serializer_class = MerchandiseSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        return Merchandise.objects.filter(is_available=True)
+
+class MerchandiseDetailView(generics.RetrieveAPIView):
+    """Детали конкретного мерча"""
+    queryset = Merchandise.objects.filter(is_available=True)
+    serializer_class = MerchandiseSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+class PurchaseMerchView(APIView):
+    """Покупка мерча за баллы"""
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def post(self, request, merch_id):
+        if request.user.user_type != 'STUDENT':
+            return Response({'error': 'Только студенты могут покупать мерч'}, 
+                           status=status.HTTP_403_FORBIDDEN)
+        
+        try:
+            merchandise = Merchandise.objects.get(id=merch_id, is_available=True)
+        except Merchandise.DoesNotExist:
+            return Response({'error': 'Мерч не найден или недоступен'}, 
+                           status=status.HTTP_404_NOT_FOUND)
+        
+        quantity = request.data.get('quantity', 1)
+        if quantity < 1:
+            return Response({'error': 'Количество должно быть больше 0'}, 
+                           status=status.HTTP_400_BAD_REQUEST)
+        
+        # Проверяем наличие на складе
+        if merchandise.stock_quantity < quantity:
+            return Response({'error': f'Недостаточно товара на складе. Доступно: {merchandise.stock_quantity}'}, 
+                           status=status.HTTP_400_BAD_REQUEST)
+        
+        student_profile = request.user.student_profile
+        total_cost = merchandise.points_cost * quantity
+        
+        # Проверяем, достаточно ли баллов
+        if student_profile.points < total_cost:
+            return Response({
+                'error': 'Недостаточно баллов',
+                'required': total_cost,
+                'available': student_profile.points
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Создаем заказ
+        order = MerchOrder.objects.create(
+            student=request.user,
+            merchandise=merchandise,
+            quantity=quantity,
+            points_spent=total_cost,
+            delivery_address=request.data.get('delivery_address', ''),
+            phone=request.data.get('phone', request.user.phone),
+            notes=request.data.get('notes', '')
+        )
+        
+        # Списываем баллы
+        student_profile.points -= total_cost
+        student_profile.save()
+        
+        # Уменьшаем количество на складе
+        merchandise.stock_quantity -= quantity
+        merchandise.save()
+        
+        # Создаем запись о транзакции
+        PointTransaction.objects.create(
+            student=request.user,
+            points=-total_cost,
+            transaction_type='SPENT',
+            description=f"Покупка мерча: {merchandise.name} x{quantity}"
+        )
+        
+        return Response({
+            'order': MerchOrderSerializer(order).data,
+            'remaining_points': student_profile.points,
+            'message': 'Заказ успешно создан'
+        }, status=status.HTTP_201_CREATED)
+
+class MerchOrderListView(generics.ListAPIView):
+    """Список заказов пользователя"""
+    serializer_class = MerchOrderSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        if self.request.user.user_type == 'STUDENT':
+            return MerchOrder.objects.filter(student=self.request.user)
+        elif self.request.user.user_type == 'MANAGER':
+            # Менеджеры видят все заказы
+            return MerchOrder.objects.all()
+        return MerchOrder.objects.none()
+
+class MerchOrderDetailView(generics.RetrieveAPIView):
+    """Детали заказа"""
+    serializer_class = MerchOrderSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        if self.request.user.user_type == 'STUDENT':
+            return MerchOrder.objects.filter(student=self.request.user)
+        elif self.request.user.user_type == 'MANAGER':
+            return MerchOrder.objects.all()
+        return MerchOrder.objects.none()

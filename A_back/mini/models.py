@@ -160,3 +160,61 @@ class PointTransaction(models.Model):
     
     def __str__(self):
         return f"{self.student.username}: {self.points} points"
+
+# Мерч (товары, которые можно купить за баллы)
+class Merchandise(models.Model):
+    MERCH_TYPE_CHOICES = (
+        ('T_SHIRT', 'Футболка'),
+        ('STICKER', 'Стикер'),
+        ('HOODIE', 'Толстовка'),
+        ('CAP', 'Кепка'),
+        ('BAG', 'Сумка'),
+        ('OTHER', 'Другое'),
+    )
+    
+    name = models.CharField(max_length=255, verbose_name='Название')
+    description = models.TextField(verbose_name='Описание', blank=True, null=True)
+    merch_type = models.CharField(max_length=20, choices=MERCH_TYPE_CHOICES, default='OTHER', verbose_name='Тип мерча')
+    points_cost = models.IntegerField(verbose_name='Стоимость в баллах')
+    image_url = models.URLField(blank=True, null=True, verbose_name='URL изображения')
+    is_available = models.BooleanField(default=True, verbose_name='Доступен')
+    stock_quantity = models.IntegerField(default=0, verbose_name='Количество на складе')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = 'Мерч'
+        verbose_name_plural = 'Мерч'
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.name} ({self.points_cost} баллов)"
+
+# Заказ мерча
+class MerchOrder(models.Model):
+    ORDER_STATUS_CHOICES = (
+        ('PENDING', 'Ожидает обработки'),
+        ('PROCESSING', 'В обработке'),
+        ('SHIPPED', 'Отправлен'),
+        ('DELIVERED', 'Доставлен'),
+        ('CANCELLED', 'Отменен'),
+    )
+    
+    student = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='merch_orders', verbose_name='Студент')
+    merchandise = models.ForeignKey(Merchandise, on_delete=models.CASCADE, related_name='orders', verbose_name='Мерч')
+    quantity = models.IntegerField(default=1, verbose_name='Количество')
+    points_spent = models.IntegerField(verbose_name='Потрачено баллов')
+    status = models.CharField(max_length=20, choices=ORDER_STATUS_CHOICES, default='PENDING', verbose_name='Статус')
+    delivery_address = models.TextField(blank=True, null=True, verbose_name='Адрес доставки')
+    phone = models.CharField(max_length=20, blank=True, null=True, verbose_name='Телефон')
+    notes = models.TextField(blank=True, null=True, verbose_name='Примечания')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата обновления')
+    
+    class Meta:
+        verbose_name = 'Заказ мерча'
+        verbose_name_plural = 'Заказы мерча'
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"Заказ #{self.id} - {self.student.username} - {self.merchandise.name}"
