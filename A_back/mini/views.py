@@ -7,7 +7,7 @@ from django.utils import timezone
 from .models import CustomUser, Event, Quiz, QuizQuestion, QuizAnswer, EventParticipation, Feedback
 from .serializers import UserSerializer, EventSerializer, QuizSerializer, QuizQuestionSerializer
 from .serializers import EventParticipationSerializer, FeedbackSerializer
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny,IsAuthenticated
 
 class RegisterView(generics.CreateAPIView):
     queryset = CustomUser.objects.all()
@@ -29,7 +29,8 @@ class RegisterView(generics.CreateAPIView):
             }
         }, status=status.HTTP_201_CREATED)
 
-class LoginView(APIView):
+class LoginView(APIView):    
+    permission_classes = [AllowAny]
     def post(self, request):
         username = request.data.get('username')
         password = request.data.get('password')
