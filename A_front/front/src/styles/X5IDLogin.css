@@ -1,0 +1,231 @@
+/* X5ID Login Page - Точная копия дизайна */
+
+.x5id-wrapper {
+  min-height: 100vh;
+  background: #9DD255; /* Мягкий лайм-зеленый */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Основная карточка */
+.x5id-card {
+  background: #FFFFFF;
+  border-radius: 24px;
+  padding: 48px 40px;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
+  position: relative;
+  z-index: 10;
+  margin-bottom: 40px;
+}
+
+/* Логотип X5ID → X5Клуб */
+.x5id-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+.x5id-logo-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.x5id-leaf-icon {
+  font-size: 24px;
+  display: inline-block;
+  filter: hue-rotate(0deg) saturate(1.2);
+  transform: rotate(-15deg);
+}
+
+.x5id-text-black {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1A1A1A;
+  letter-spacing: -0.3px;
+}
+
+.x5id-arrow {
+  font-size: 20px;
+  color: #9E9E9E;
+  font-weight: 400;
+}
+
+/* Заголовок */
+.x5id-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #1A1A1A;
+  text-align: center;
+  margin-bottom: 32px;
+  letter-spacing: -0.5px;
+}
+
+/* Форма */
+.x5id-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.x5id-label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1A1A1A;
+  margin-bottom: -10px;
+}
+
+/* Поле ввода телефона */
+.x5id-phone-input {
+  width: 100%;
+  padding: 16px 20px;
+  font-size: 18px;
+  border: 2px solid #00A650;
+  border-radius: 12px;
+  outline: none;
+  background: #FFFFFF;
+  color: #1A1A1A;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.x5id-phone-input:focus {
+  border-color: #008C43;
+  box-shadow: 0 0 0 4px rgba(0, 166, 80, 0.1);
+  background: #F1F9F3;
+}
+
+.x5id-phone-input::placeholder {
+  color: #B0B0B0;
+}
+
+/* Кнопки */
+.x5id-submit-btn,
+.x5id-info-btn {
+  width: 100%;
+  padding: 16px 24px;
+  font-size: 16px;
+  font-weight: 700;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 0.3px;
+}
+
+.x5id-submit-btn {
+  background: #E0E0E0;
+  color: #9E9E9E;
+  margin-top: 8px;
+}
+
+.x5id-submit-btn:not(:disabled) {
+  background: linear-gradient(135deg, #00A650 0%, #008C43 100%);
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(0, 166, 80, 0.3);
+}
+
+.x5id-submit-btn:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 166, 80, 0.4);
+}
+
+.x5id-submit-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Ошибка */
+.x5id-error {
+  padding: 12px 16px;
+  background: #FFEBEE;
+  border-left: 4px solid #E53935;
+  border-radius: 8px;
+  color: #E53935;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Кнопка помощи внизу */
+.x5id-help-btn {
+  position: relative;
+  z-index: 10;
+  padding: 14px 32px;
+  background: #006E34;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 110, 52, 0.3);
+  letter-spacing: 0.3px;
+}
+
+.x5id-help-btn:hover {
+  background: #005A2B;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 110, 52, 0.4);
+}
+
+.x5id-help-btn:active {
+  transform: translateY(0);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .x5id-card {
+    padding: 36px 28px;
+    margin: 20px;
+  }
+
+  .x5id-title {
+    font-size: 24px;
+  }
+
+  .x5id-logo {
+    gap: 10px;
+  }
+
+  .x5id-logo-tag {
+    padding: 6px 12px;
+  }
+
+  .x5id-text-white {
+    font-size: 14px;
+  }
+
+}
+
+@media (max-width: 480px) {
+  .x5id-card {
+    padding: 28px 20px;
+  }
+
+  .x5id-title {
+    font-size: 22px;
+  }
+
+  .x5id-logo {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .x5id-arrow {
+    transform: rotate(90deg);
+  }
+}

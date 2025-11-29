@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getEvents } from '../api';
 import { useNavigate } from 'react-router-dom';
+import '../styles/Events.css';
 
 function Events() {
   const [events, setEvents] = useState([]);
@@ -14,7 +15,14 @@ function Events() {
         const data = await getEvents();
         setEvents(data);
       } catch (err) {
-        setError('Failed to load events');
+        console.error('Error fetching events:', err);
+        if (err.response?.status === 401) {
+          setError('Пожалуйста, войдите в систему для просмотра мероприятий');
+        } else if (err.response?.status === 403) {
+          setError('У вас нет доступа для просмотра мероприятий');
+        } else {
+          setError('Не удалось загрузить мероприятия. Пожалуйста, попробуйте позже.');
+        }
       } finally {
         setLoading(false);
       }
@@ -23,28 +31,86 @@ function Events() {
     fetchEvents();
   }, []);
 
-  if (loading) return <div className="loading-container">Loading events...</div>;
-  if (error) return <div className="error-message">{error}</div>;
+  const getEventTypeLabel = (type) => {
+    const types = {
+      'QUIZ': 'Квиз',
+      'MINIGAME': 'Мини-игра',
+      'QUEST': 'Квест',
+      'PHOTO': 'Фото-челлендж'
+    };
+    return types[type] || type;
+  };
+
+  if (loading) {
+    return (
+      <div className="events-container">
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Загрузка мероприятий...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="events-container">
+        <div className="error-message">
+          <h3>Ошибка</h3>
+          <p>{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="events-container">
-      <h1>Available Events</h1>
+      <div className="events-header">
+        <h1>Доступные мероприятия</h1>
+        <p className="events-subtitle">
+          Выберите мероприятие и начните зарабатывать баллы
+        </p>
+      </div>
       
       {events.length === 0 ? (
-        <p>No events available at the moment.</p>
+        <div className="events-empty">
+          <div className="events-empty-icon">📅</div>
+          <h3>Нет доступных мероприятий</h3>
+          <p>В данный момент нет активных мероприятий. Проверьте позже.</p>
+        </div>
       ) : (
         <div className="events-grid">
           {events.map(event => (
             <div key={event.id} className="event-card">
-              <h2>{event.title}</h2>
-              <p>{event.description.substring(0, 100)}...</p>
-              <p>Type: {event.event_type}</p>
-              <p>Points: {event.points}</p>
+              <div className="event-card-badge">
+                {getEventTypeLabel(event.event_type)}
+              </div>
+              
+              <h2 className="event-card-title">{event.title}</h2>
+              
+              <p className="event-card-description">
+                {event.description && event.description.length > 120 
+                  ? `${event.description.substring(0, 120)}...` 
+                  : event.description || 'Описание отсутствует'}
+              </p>
+              
+              <div className="event-card-meta">
+                <div className="event-card-meta-item">
+                  <span>Тип:</span>
+                  <strong>{getEventTypeLabel(event.event_type)}</strong>
+                </div>
+              </div>
+              
+              <div className="event-card-points">
+                <span className="points-value">{event.points}</span>
+                <span className="points-label">баллов</span>
+              </div>
+              
               <button 
                 onClick={() => navigate(`/event/${event.id}`)}
                 className="btn primary-btn"
               >
-                Join Event
+                Участвовать
               </button>
             </div>
           ))}

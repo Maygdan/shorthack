@@ -2,27 +2,47 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.auth import authenticate
 from django.utils import timezone
-from .models import CustomUser, Event, Quiz, QuizQuestion, QuizAnswer, EventParticipation, Feedback
-from .serializers import UserSerializer, EventSerializer, QuizSerializer, QuizQuestionSerializer
-from .serializers import EventParticipationSerializer, FeedbackSerializer
+from django.db import models
+from .models import CustomUser, Event, Quiz, QuizQuestion, QuizAnswer, EventParticipation, Feedback, Minigame, PointTransaction
+from .serializers import UserSerializer, EventSerializer, QuizSerializer, FeedbackSerializer, MinigameSerializer
 from rest_framework.permissions import AllowAny
 
 class RegisterView(generics.CreateAPIView):
-    queryset = CustomUser.objects.all()
-    serializer_class = UserSerializer
     permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save()
+        # Для регистрации теперь нужен только телефон
+        phone = request.data.get('phone', '').strip()
+        phone_clean = ''.join(filter(str.isdigit, phone))
+        
+        if phone_clean.startswith('7') or phone_clean.startswith('8'):
+            phone_clean = phone_clean[1:]
+        
+        if not phone_clean or len(phone_clean) < 10:
+            return Response({'error': 'Неверный номер телефона'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Проверяем, не существует ли уже пользователь с таким телефоном
+        if CustomUser.objects.filter(phone=phone_clean).exists():
+            return Response({'error': 'Пользователь с таким номером телефона уже существует'}, 
+                          status=status.HTTP_400_BAD_REQUEST)
+        
+        # Создаем пользователя
+        username = f"user_{phone_clean}"
+        user = CustomUser.objects.create_user(
+            username=username,
+            email=f"{username}@x5.ru",
+            password=None,
+            phone=phone_clean,
+            user_type=request.data.get('user_type', 'STUDENT')
+        )
+        user.set_unusable_password()
+        user.save()
         
         # Генерация JWT токена
         refresh = RefreshToken.for_user(user)
         return Response({
-            'user': serializer.data,
+            'user': UserSerializer(user).data,
             'access': str(refresh.access_token),
             'refresh': str(refresh),
         }, status=status.HTTP_201_CREATED)
@@ -31,19 +51,46 @@ class LoginView(APIView):
     permission_classes = [AllowAny]
     
     def post(self, request):
-        username = request.data.get('username')
-        password = request.data.get('password')
+        phone = request.data.get('phone', '').strip()
         
-        user = authenticate(username=username, password=password)
+        # Очищаем телефон от всех символов кроме цифр
+        phone_clean = ''.join(filter(str.isdigit, phone))
         
-        if user:
-            refresh = RefreshToken.for_user(user)
-            return Response({
-                'user': UserSerializer(user).data,
-                'access': str(refresh.access_token),
-                'refresh': str(refresh),
-            })
-        return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+        if not phone_clean or len(phone_clean) < 10:
+            return Response({'error': 'Неверный номер телефона'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Нормализуем телефон (убираем 7 или 8 в начале, если есть)
+        if phone_clean.startswith('7') or phone_clean.startswith('8'):
+            phone_clean = phone_clean[1:]
+        
+        # Ищем пользователя по телефону
+        try:
+            user = CustomUser.objects.get(phone__endswith=phone_clean)
+        except CustomUser.DoesNotExist:
+            # Если пользователь не найден, создаем нового студента
+            # В реальной системе здесь была бы отправка SMS-кода
+            username = f"user_{phone_clean}"
+            user = CustomUser.objects.create_user(
+                username=username,
+                email=f"{username}@x5.ru",
+                password=None,  # Без пароля
+                phone=phone_clean,
+                user_type='STUDENT'
+            )
+            # Устанавливаем unusable password, так как Django требует пароль
+            user.set_unusable_password()
+            user.save()
+        except CustomUser.MultipleObjectsReturned:
+            # Если найдено несколько пользователей, берем первого
+            user = CustomUser.objects.filter(phone__endswith=phone_clean).first()
+        
+        # Генерируем токены
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            'user': UserSerializer(user).data,
+            'access': str(refresh.access_token),
+            'refresh': str(refresh),
+        })
 
 class EventListView(generics.ListCreateAPIView):
     serializer_class = EventSerializer

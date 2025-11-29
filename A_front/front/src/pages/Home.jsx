@@ -37,7 +37,7 @@ function Home() {
       <section className="home-hero">
         <div className="home-hero-content">
           <h1 className="home-title">
-            Добро пожаловать в <span className="highlight">X5 Group</span>
+            Добро пожаловать в <span className="highlight">X5</span>
           </h1>
           <p className="home-subtitle">
             {user.username ? `Привет, ${user.username}! ` : ''}
@@ -143,7 +143,7 @@ function Home() {
           <div className="home-footer-logo">
             <X5Logo size="medium" color="green" />
           </div>
-          <p>© 2025 X5 Group. Все права защищены.</p>
+          <p>© 2025 X5. Все права защищены.</p>
           <div className="home-footer-links">
             <a href="#">О компании</a>
             <a href="#">Конфиденциальность</a>
