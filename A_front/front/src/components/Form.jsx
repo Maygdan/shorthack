@@ -1,8 +1,9 @@
 import { useState } from "react";
 import api from "../api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
-import "../styles/Form.css"
+import "../styles/Form.css";
+import "../styles/Global.css";
 import LoadingIndicator from "./LoadingIndicator";
 
 function Form({ route, method }) {
@@ -11,7 +12,8 @@ function Form({ route, method }) {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    const name = method === "login" ? "Login" : "Register";
+    const name = method === "login" ? "Вход" : "Регистрация";
+    const isLogin = method === "login";
 
     const handleSubmit = async (e) => {
         setLoading(true);
@@ -34,27 +36,75 @@ function Form({ route, method }) {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="form-container">
-            <h1>{name}</h1>
-            <input
-                className="form-input"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Username"
-            />
-            <input
-                className="form-input"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
-            />
-            {loading && <LoadingIndicator />}
-            <button className="form-button" type="submit">
-                {name}
-            </button>
-        </form>
+        <div className="form-wrapper">
+            <div className="form-container">
+                <div className="form-header">
+                    <div className="form-logo">X5</div>
+                    <h1 className="form-title">{name}</h1>
+                    <p className="form-subtitle">
+                        {isLogin 
+                            ? "Войдите в свой аккаунт" 
+                            : "Создайте новый аккаунт"}
+                    </p>
+                </div>
+
+                <form onSubmit={handleSubmit} className="form-body">
+                    <div className="form-group">
+                        <label className="form-label" htmlFor="username">
+                            Имя пользователя
+                        </label>
+                        <input
+                            id="username"
+                            className="form-input"
+                            type="text"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            placeholder="Введите имя пользователя"
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label className="form-label" htmlFor="password">
+                            Пароль
+                        </label>
+                        <input
+                            id="password"
+                            className="form-input"
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="Введите пароль"
+                            required
+                        />
+                    </div>
+
+                    {loading && <LoadingIndicator />}
+
+                    <button 
+                        className="form-button" 
+                        type="submit"
+                        disabled={loading}
+                    >
+                        {loading ? "Загрузка..." : name}
+                    </button>
+                </form>
+
+                <div className="form-footer">
+                    {isLogin ? (
+                        <p>
+                            Нет аккаунта?{" "}
+                            <Link to="/register">Зарегистрироваться</Link>
+                        </p>
+                    ) : (
+                        <p>
+                            Уже есть аккаунт?{" "}
+                            <Link to="/login">Войти</Link>
+                        </p>
+                    )}
+                </div>
+            </div>
+        </div>
     );
 }
 
