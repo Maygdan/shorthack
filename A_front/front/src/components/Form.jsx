@@ -1,27 +1,20 @@
 import { useState } from "react";
 import api from "../api";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 import "../styles/Form.css";
-<<<<<<< HEAD
-=======
-import "../styles/Global.css";
->>>>>>> eb86eb7c2ced0f65c8cf6c85700bda5d0984477e
 import LoadingIndicator from "./LoadingIndicator";
 
 function Form({ route, method, onLogin }) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState(""); // Добавляем поле email для регистрации
+    const [userType, setUserType] = useState("STUDENT"); // Добавляем выбор типа пользователя
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
-<<<<<<< HEAD
     const name = method === "login" ? "Login" : "Register";
-=======
-    const name = method === "login" ? "Вход" : "Регистрация";
->>>>>>> eb86eb7c2ced0f65c8cf6c85700bda5d0984477e
     const isLogin = method === "login";
 
     const handleSubmit = async (e) => {
@@ -49,9 +42,29 @@ function Form({ route, method, onLogin }) {
                 
                 navigate("/");
             } else {
-                // Для регистрации отправляем username, password и email
-                res = await api.post(route, { username, password, email });
-                navigate("/login");
+                // Для регистрации отправляем username, password, email и user_type
+                res = await api.post(route, { 
+                    username, 
+                    password, 
+                    email,
+                    user_type: userType 
+                });
+                
+                // После регистрации также сохраняем токены и логиним пользователя
+                if (res.data.access && res.data.refresh) {
+                    localStorage.setItem(ACCESS_TOKEN, res.data.access);
+                    localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
+                    
+                    if (res.data.user) {
+                        localStorage.setItem("user", JSON.stringify(res.data.user));
+                        localStorage.setItem("userRole", res.data.user.user_type);
+                    }
+                    
+                    navigate("/");
+                } else {
+                    // Если токены не вернулись, переходим на страницу логина
+                    navigate("/login");
+                }
             }
         } catch (error) {
             console.error("Authentication error:", error);
@@ -69,6 +82,8 @@ function Form({ route, method, onLogin }) {
                     errorMessage = error.response.data.non_field_errors[0];
                 } else if (error.response.data.detail) {
                     errorMessage = error.response.data.detail;
+                } else if (error.response.data.error) {
+                    errorMessage = error.response.data.error;
                 }
             } else if (error.request) {
                 // Запрос был сделан, но ответ не был получен
@@ -86,7 +101,6 @@ function Form({ route, method, onLogin }) {
     };
 
     return (
-<<<<<<< HEAD
         <form onSubmit={handleSubmit} className="form-container">
             <h1>{name}</h1>
             
@@ -112,6 +126,18 @@ function Form({ route, method, onLogin }) {
                 />
             )}
             
+            {!isLogin && (
+                <select 
+                    className="form-input"
+                    value={userType}
+                    onChange={(e) => setUserType(e.target.value)}
+                    required
+                >
+                    <option value="STUDENT">Student</option>
+                    <option value="MANAGER">Manager</option>
+                </select>
+            )}
+            
             <input
                 className="form-input"
                 type="password"
@@ -127,83 +153,16 @@ function Form({ route, method, onLogin }) {
                 {loading ? "Processing..." : name}
             </button>
             
-            {!isLogin && (
+            {isLogin ? (
+                <p className="form-footer">
+                    Don't have an account? <button type="button" onClick={() => navigate('/register')} className="link-button">Register here</button>
+                </p>
+            ) : (
                 <p className="form-footer">
                     Already have an account? <button type="button" onClick={() => navigate('/login')} className="link-button">Login here</button>
                 </p>
             )}
         </form>
-=======
-        <div className="form-wrapper">
-            <div className="form-container">
-                <div className="form-header">
-                    <div className="form-logo">X5</div>
-                    <h1 className="form-title">{name}</h1>
-                    <p className="form-subtitle">
-                        {isLogin 
-                            ? "Войдите в свой аккаунт" 
-                            : "Создайте новый аккаунт"}
-                    </p>
-                </div>
-
-                <form onSubmit={handleSubmit} className="form-body">
-                    <div className="form-group">
-                        <label className="form-label" htmlFor="username">
-                            Имя пользователя
-                        </label>
-                        <input
-                            id="username"
-                            className="form-input"
-                            type="text"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            placeholder="Введите имя пользователя"
-                            required
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label className="form-label" htmlFor="password">
-                            Пароль
-                        </label>
-                        <input
-                            id="password"
-                            className="form-input"
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="Введите пароль"
-                            required
-                        />
-                    </div>
-
-                    {loading && <LoadingIndicator />}
-
-                    <button 
-                        className="form-button" 
-                        type="submit"
-                        disabled={loading}
-                    >
-                        {loading ? "Загрузка..." : name}
-                    </button>
-                </form>
-
-                <div className="form-footer">
-                    {isLogin ? (
-                        <p>
-                            Нет аккаунта?{" "}
-                            <Link to="/register">Зарегистрироваться</Link>
-                        </p>
-                    ) : (
-                        <p>
-                            Уже есть аккаунт?{" "}
-                            <Link to="/login">Войти</Link>
-                        </p>
-                    )}
-                </div>
-            </div>
-        </div>
->>>>>>> eb86eb7c2ced0f65c8cf6c85700bda5d0984477e
     );
 }
 

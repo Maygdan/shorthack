@@ -23,13 +23,13 @@ class RegisterView(generics.CreateAPIView):
         refresh = RefreshToken.for_user(user)
         return Response({
             'user': serializer.data,
-            'token': {
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
-            }
+            'access': str(refresh.access_token),
+            'refresh': str(refresh),
         }, status=status.HTTP_201_CREATED)
 
 class LoginView(APIView):
+    permission_classes = [AllowAny]
+    
     def post(self, request):
         username = request.data.get('username')
         password = request.data.get('password')
@@ -40,10 +40,8 @@ class LoginView(APIView):
             refresh = RefreshToken.for_user(user)
             return Response({
                 'user': UserSerializer(user).data,
-                'token': {
-                    'refresh': str(refresh),
-                    'access': str(refresh.access_token),
-                }
+                'access': str(refresh.access_token),
+                'refresh': str(refresh),
             })
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 

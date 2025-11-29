@@ -1,51 +1,16 @@
-<<<<<<< HEAD
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import X5Logo from '../components/X5Logo';
+import '../styles/Home.css';
 
 function Home() {
   const navigate = useNavigate();
-  const userRole = localStorage.getItem('userRole'); // Вы можете сохранять роль пользователя при логине
-
-  return (
-    <div className="home-container">
-      <h1>Welcome to ShortHack Platform</h1>
-      
-      {userRole === 'STUDENT' ? (
-        <div className="student-actions">
-          <h2>Student Actions</h2>
-          <button onClick={() => navigate('/events')} className="btn primary-btn">
-            View Events
-          </button>
-        </div>
-      ) : userRole === 'MANAGER' ? (
-        <div className="manager-actions">
-          <h2>Manager Actions</h2>
-          <button onClick={() => navigate('/analytics')} className="btn primary-btn">
-            View Analytics
-          </button>
-        </div>
-      ) : (
-        <div className="role-selection">
-          <h2>Choose your role</h2>
-          <button onClick={() => navigate('/events')} className="btn primary-btn">
-            I'm a Student
-          </button>
-          <button onClick={() => navigate('/analytics')} className="btn secondary-btn">
-            I'm a Manager
-          </button>
-        </div>
-      )}
-=======
-import { useNavigate } from "react-router-dom";
-import "../styles/Home.css";
-import "../styles/Global.css";
-
-function Home() {
-  const navigate = useNavigate();
+  const userRole = localStorage.getItem('userRole');
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
 
   const handleLogout = () => {
     localStorage.clear();
-    navigate("/login");
+    navigate('/login');
   };
 
   return (
@@ -53,58 +18,95 @@ function Home() {
       {/* Header */}
       <header className="home-header">
         <div className="home-header-content">
-          <div className="home-logo">X5</div>
+          <X5Logo size="medium" />
           <nav className="home-nav">
-            <a href="#features">Возможности</a>
-            <a href="#about">О проекте</a>
+            {userRole === 'STUDENT' && (
+              <a href="/events">Мероприятия</a>
+            )}
+            {userRole === 'MANAGER' && (
+              <a href="/analytics">Аналитика</a>
+            )}
             <button onClick={handleLogout} className="home-logout-btn">
-              Выйти
+              Выход
             </button>
           </nav>
         </div>
       </header>
 
-      {/* Hero секция */}
+      {/* Hero Section */}
       <section className="home-hero">
         <div className="home-hero-content">
           <h1 className="home-title">
-            Добро пожаловать в <span className="highlight">X5</span>
+            Добро пожаловать в <span className="highlight">X5 Group</span>
           </h1>
           <p className="home-subtitle">
-            Современная платформа для управления вашими проектами. 
-            Создавайте, управляйте и развивайте свой бизнес с нами.
+            {user.username ? `Привет, ${user.username}! ` : ''}
+            Платформа для интерактивных мероприятий, квизов и обучения. 
+            Развивайтесь вместе с нами!
           </p>
           <div className="home-cta">
-            <button className="btn btn-primary" onClick={() => alert('Начать работу')}>
-              Начать работу
-            </button>
-            <button className="btn btn-secondary" onClick={() => alert('Узнать больше')}>
-              Узнать больше
-            </button>
+            {userRole === 'STUDENT' ? (
+              <>
+                <button onClick={() => navigate('/events')} className="btn btn-primary btn-large">
+                  Перейти к мероприятиям
+                </button>
+                <button onClick={() => navigate('/events')} className="btn btn-secondary btn-large">
+                  Мой профиль
+                </button>
+              </>
+            ) : userRole === 'MANAGER' ? (
+              <>
+                <button onClick={() => navigate('/analytics')} className="btn btn-primary btn-large">
+                  Аналитика
+                </button>
+                <button onClick={() => navigate('/events')} className="btn btn-secondary btn-large">
+                  Мероприятия
+                </button>
+              </>
+            ) : (
+              <>
+                <button onClick={() => navigate('/events')} className="btn btn-primary btn-large">
+                  Я студент
+                </button>
+                <button onClick={() => navigate('/analytics')} className="btn btn-secondary btn-large">
+                  Я менеджер
+                </button>
+              </>
+            )}
           </div>
         </div>
       </section>
 
-      {/* Возможности */}
-      <section className="home-features" id="features">
+      {/* Features Section */}
+      <section className="home-features">
         <div className="home-features-content">
-          <h2 className="home-features-title">Наши возможности</h2>
+          <h2 className="home-features-title">Возможности платформы</h2>
+          <p className="home-features-subtitle">
+            Все инструменты для эффективного обучения и развития в одном месте
+          </p>
+          
           <div className="home-features-grid">
             <div className="home-feature-card">
-              <div className="home-feature-icon">🚀</div>
-              <h3 className="home-feature-title">Быстрый старт</h3>
+              <div className="home-feature-icon">🎯</div>
+              <h3 className="home-feature-title">Интерактивные квизы</h3>
               <p className="home-feature-description">
-                Начните работу за считанные минуты с интуитивным интерфейсом
-                и простой настройкой.
+                Проверяйте свои знания с помощью увлекательных квизов и получайте мгновенную обратную связь
               </p>
             </div>
 
             <div className="home-feature-card">
-              <div className="home-feature-icon">🔒</div>
-              <h3 className="home-feature-title">Безопасность</h3>
+              <div className="home-feature-icon">🎮</div>
+              <h3 className="home-feature-title">Мини-игры</h3>
               <p className="home-feature-description">
-                Ваши данные защищены современными технологиями шифрования
-                и аутентификации.
+                Обучайтесь через игру! Интерактивные мини-игры делают процесс обучения веселым и эффективным
+              </p>
+            </div>
+
+            <div className="home-feature-card">
+              <div className="home-feature-icon">⭐</div>
+              <h3 className="home-feature-title">Система баллов</h3>
+              <p className="home-feature-description">
+                Зарабатывайте баллы за выполнение заданий и отслеживайте свой прогресс
               </p>
             </div>
 
@@ -112,35 +114,23 @@ function Home() {
               <div className="home-feature-icon">📊</div>
               <h3 className="home-feature-title">Аналитика</h3>
               <p className="home-feature-description">
-                Получайте детальную аналитику и отчеты для принятия
-                обоснованных решений.
+                Для менеджеров: детальная аналитика по всем мероприятиям и участникам
               </p>
             </div>
 
             <div className="home-feature-card">
-              <div className="home-feature-icon">⚡</div>
-              <h3 className="home-feature-title">Производительность</h3>
+              <div className="home-feature-icon">💬</div>
+              <h3 className="home-feature-title">Обратная связь</h3>
               <p className="home-feature-description">
-                Высокая скорость работы и оптимизация для любых устройств
-                и платформ.
+                Оставляйте отзывы и помогайте улучшать качество мероприятий
               </p>
             </div>
 
             <div className="home-feature-card">
-              <div className="home-feature-icon">🤝</div>
-              <h3 className="home-feature-title">Командная работа</h3>
+              <div className="home-feature-icon">📱</div>
+              <h3 className="home-feature-title">QR-коды</h3>
               <p className="home-feature-description">
-                Эффективное взаимодействие в команде с удобными инструментами
-                коллаборации.
-              </p>
-            </div>
-
-            <div className="home-feature-card">
-              <div className="home-feature-icon">🎯</div>
-              <h3 className="home-feature-title">Гибкость</h3>
-              <p className="home-feature-description">
-                Настраивайте систему под свои нужды с широкими возможностями
-                кастомизации.
+                Быстрый доступ к мероприятиям через QR-коды для максимального удобства
               </p>
             </div>
           </div>
@@ -150,10 +140,18 @@ function Home() {
       {/* Footer */}
       <footer className="home-footer">
         <div className="home-footer-content">
-          <p>© 2025 X5. Все права защищены.</p>
+          <div className="home-footer-logo">
+            <X5Logo size="medium" color="green" />
+          </div>
+          <p>© 2025 X5 Group. Все права защищены.</p>
+          <div className="home-footer-links">
+            <a href="#">О компании</a>
+            <a href="#">Конфиденциальность</a>
+            <a href="#">Условия использования</a>
+            <a href="#">Поддержка</a>
+          </div>
         </div>
       </footer>
->>>>>>> eb86eb7c2ced0f65c8cf6c85700bda5d0984477e
     </div>
   );
 }

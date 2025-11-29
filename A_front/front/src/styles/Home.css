@@ -1,4 +1,4 @@
-/* Home page в стиле X5 */
+/* Home page в фирменном стиле X5 Group */
 
 .home-wrapper {
   min-height: 100vh;
@@ -8,107 +8,176 @@
 /* Header в стиле X5 */
 .home-header {
   background-color: var(--x5-white);
-  border-bottom: 1px solid #E0E0E0;
+  border-bottom: 1px solid var(--x5-gray-light);
   padding: 20px 0;
   position: sticky;
   top: 0;
   z-index: 100;
   box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.95);
 }
 
 .home-header-content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 .home-logo {
-  font-size: 32px;
-  font-weight: 700;
+  font-size: 36px;
+  font-weight: 800;
   color: var(--x5-green);
-  letter-spacing: -1px;
+  letter-spacing: -1.5px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.home-logo::before {
+  content: '';
+  width: 8px;
+  height: 40px;
+  background: linear-gradient(180deg, var(--x5-green) 0%, var(--x5-green-dark) 100%);
+  border-radius: var(--radius-full);
 }
 
 .home-nav {
   display: flex;
-  gap: 32px;
+  gap: 40px;
   align-items: center;
 }
 
 .home-nav a {
   color: var(--x5-black);
   font-size: 16px;
-  font-weight: 500;
-  transition: var(--transition);
+  font-weight: 600;
+  transition: var(--transition-fast);
+  position: relative;
+  padding: 8px 0;
+}
+
+.home-nav a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background-color: var(--x5-green);
+  transition: width 0.3s ease;
+  border-radius: var(--radius-full);
 }
 
 .home-nav a:hover {
   color: var(--x5-green);
 }
 
+.home-nav a:hover::after {
+  width: 100%;
+}
+
 .home-logout-btn {
-  padding: 10px 24px;
+  padding: 12px 28px;
   background-color: transparent;
   color: var(--x5-green);
   border: 2px solid var(--x5-green);
-  border-radius: 4px;
-  font-size: 14px;
-  font-weight: 600;
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-weight: 700;
   cursor: pointer;
   transition: var(--transition);
+  letter-spacing: 0.3px;
 }
 
 .home-logout-btn:hover {
   background-color: var(--x5-green);
   color: var(--x5-white);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
-/* Hero секция */
+.home-logout-btn:active {
+  transform: translateY(0);
+}
+
+/* Hero секция в стиле X5 */
 .home-hero {
-  background: linear-gradient(135deg, var(--x5-green-light) 0%, var(--x5-white) 100%);
-  padding: 120px 20px;
+  background: linear-gradient(135deg, #F1F9F3 0%, #E8F5E9 40%, #FFFFFF 100%);
+  padding: 140px 24px 120px;
   text-align: center;
-  animation: fadeIn 0.8s ease-out;
+  position: relative;
+  overflow: hidden;
+}
+
+.home-hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -10%;
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(circle, rgba(0, 166, 80, 0.08) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.home-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  right: -10%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(0, 166, 80, 0.05) 0%, transparent 70%);
+  border-radius: 50%;
 }
 
 .home-hero-content {
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
 .home-title {
-  font-size: 56px;
-  font-weight: 700;
+  font-size: 64px;
+  font-weight: 800;
   color: var(--x5-black);
-  margin-bottom: 24px;
-  line-height: 1.2;
-  animation: slideUp 0.8s ease-out;
+  margin-bottom: 28px;
+  line-height: 1.1;
+  letter-spacing: -1.5px;
+  animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .home-title .highlight {
   color: var(--x5-green);
+  background: linear-gradient(135deg, var(--x5-green) 0%, var(--x5-green-dark) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .home-subtitle {
-  font-size: 20px;
-  color: var(--x5-gray);
-  margin-bottom: 40px;
-  line-height: 1.6;
-  animation: slideUp 0.8s ease-out 0.2s both;
+  font-size: 22px;
+  color: var(--x5-gray-dark);
+  margin-bottom: 48px;
+  line-height: 1.7;
+  font-weight: 500;
+  animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
 }
 
 .home-cta {
   display: inline-flex;
-  gap: 16px;
-  animation: slideUp 0.8s ease-out 0.4s both;
+  gap: 20px;
+  animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
 }
 
-/* Карточки возможностей */
+/* Карточки возможностей в стиле X5 */
 .home-features {
-  padding: 80px 20px;
+  padding: 100px 24px;
   background-color: var(--x5-white);
 }
 
@@ -119,63 +188,104 @@
 
 .home-features-title {
   text-align: center;
-  font-size: 42px;
-  margin-bottom: 60px;
+  font-size: 48px;
+  font-weight: 800;
+  margin-bottom: 24px;
   color: var(--x5-black);
+  letter-spacing: -1px;
+}
+
+.home-features-subtitle {
+  text-align: center;
+  font-size: 20px;
+  color: var(--x5-gray);
+  margin-bottom: 72px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .home-features-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 32px;
 }
 
 .home-feature-card {
   background-color: var(--x5-white);
-  border: 1px solid #E0E0E0;
-  border-radius: 8px;
-  padding: 40px 32px;
+  border: 2px solid var(--x5-gray-light);
+  border-radius: var(--radius-xl);
+  padding: 44px 36px;
   transition: var(--transition);
   cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.home-feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--x5-green) 0%, var(--x5-green-dark) 100%);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.home-feature-card:hover::before {
+  transform: scaleX(1);
 }
 
 .home-feature-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-xl);
   border-color: var(--x5-green);
+  background-color: var(--x5-green-lighter);
 }
 
 .home-feature-icon {
-  width: 64px;
-  height: 64px;
-  background-color: var(--x5-green-light);
-  border-radius: 12px;
+  width: 72px;
+  height: 72px;
+  background: linear-gradient(135deg, var(--x5-green-light) 0%, var(--x5-green-lighter) 100%);
+  border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 32px;
-  margin-bottom: 24px;
+  font-size: 36px;
+  margin-bottom: 28px;
+  transition: var(--transition);
+}
+
+.home-feature-card:hover .home-feature-icon {
+  transform: scale(1.1) rotate(-5deg);
+  background: linear-gradient(135deg, var(--x5-green) 0%, var(--x5-green-dark) 100%);
 }
 
 .home-feature-title {
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 12px;
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 16px;
   color: var(--x5-black);
+  letter-spacing: -0.5px;
 }
 
 .home-feature-description {
-  font-size: 16px;
+  font-size: 17px;
   color: var(--x5-gray);
-  line-height: 1.6;
+  line-height: 1.7;
+  font-weight: 500;
 }
 
-/* Footer */
+/* Footer в стиле X5 */
 .home-footer {
-  background-color: var(--x5-black);
+  background: linear-gradient(135deg, var(--x5-black) 0%, #0D0D0D 100%);
   color: var(--x5-white);
-  padding: 40px 20px;
+  padding: 60px 24px 40px;
   text-align: center;
+  border-top: 4px solid var(--x5-green);
 }
 
 .home-footer-content {
@@ -183,9 +293,38 @@
   margin: 0 auto;
 }
 
+.home-footer-logo {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--x5-green);
+  margin-bottom: 20px;
+  letter-spacing: -1px;
+}
+
 .home-footer p {
-  color: #B0B0B0;
+  color: #A0A0A0;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.home-footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-top: 32px;
+  padding-top: 32px;
+  border-top: 1px solid #333;
+}
+
+.home-footer-links a {
+  color: #A0A0A0;
   font-size: 14px;
+  font-weight: 500;
+  transition: var(--transition-fast);
+}
+
+.home-footer-links a:hover {
+  color: var(--x5-green);
 }
 
 /* Анимации */

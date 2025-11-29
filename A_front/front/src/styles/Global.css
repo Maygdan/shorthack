@@ -1,26 +1,45 @@
 /* Глобальные стили в корпоративном стиле X5 */
 
 :root {
-  /* Цветовая палитра X5 */
+  /* Официальная цветовая палитра X5 Group */
   --x5-green: #00A650;
   --x5-green-dark: #008C43;
+  --x5-green-darker: #006E34;
   --x5-green-light: #E8F5E9;
+  --x5-green-lighter: #F1F9F3;
   --x5-black: #1A1A1A;
   --x5-gray: #6B6B6B;
+  --x5-gray-dark: #424242;
   --x5-gray-light: #F5F5F5;
+  --x5-gray-lighter: #FAFAFA;
   --x5-white: #FFFFFF;
   --x5-red: #E53935;
+  --x5-blue: #1976D2;
+  --x5-orange: #FF9800;
   
-  /* Шрифты */
-  --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  /* Шрифты X5 */
+  --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   
-  /* Тени */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  /* Тени в стиле X5 */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.15);
+  --shadow-green: 0 4px 14px rgba(0, 166, 80, 0.25);
   
   /* Переходы */
+  --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Радиусы */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
 }
 
 * {
@@ -34,8 +53,10 @@ body {
   background-color: var(--x5-white);
   color: var(--x5-black);
   line-height: 1.6;
+  font-size: 16px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 #root {
@@ -44,33 +65,48 @@ body {
 
 /* Кнопки в стиле X5 */
 .btn {
-  display: inline-block;
-  padding: 12px 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 32px;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 600;
   text-align: center;
   text-decoration: none;
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radius-md);
   cursor: pointer;
   transition: var(--transition);
   font-family: var(--font-primary);
   outline: none;
+  white-space: nowrap;
+  user-select: none;
 }
 
 .btn-primary {
   background-color: var(--x5-green);
   color: var(--x5-white);
+  box-shadow: var(--shadow-sm);
 }
 
 .btn-primary:hover {
   background-color: var(--x5-green-dark);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-green);
 }
 
 .btn-primary:active {
   transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:disabled {
+  background-color: var(--x5-gray-light);
+  color: var(--x5-gray);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .btn-secondary {
@@ -82,6 +118,33 @@ body {
 .btn-secondary:hover {
   background-color: var(--x5-green);
   color: var(--x5-white);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-secondary:active {
+  transform: translateY(0);
+}
+
+.btn-outline {
+  background-color: var(--x5-white);
+  color: var(--x5-black);
+  border: 2px solid var(--x5-gray-light);
+}
+
+.btn-outline:hover {
+  border-color: var(--x5-green);
+  color: var(--x5-green);
+}
+
+.btn-large {
+  padding: 16px 40px;
+  font-size: 18px;
+}
+
+.btn-small {
+  padding: 10px 20px;
+  font-size: 14px;
 }
 
 /* Заголовки */

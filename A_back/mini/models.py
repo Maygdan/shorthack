@@ -44,16 +44,20 @@ class ManagerProfile(models.Model):
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         if instance.user_type == 'STUDENT':
-            StudentProfile.objects.create(user=instance)
+            StudentProfile.objects.get_or_create(user=instance)
         elif instance.user_type == 'MANAGER':
-            ManagerProfile.objects.create(user=instance)
+            ManagerProfile.objects.get_or_create(user=instance)
 
 @receiver(post_save, sender=CustomUser)
-def save_user_profile(sender, instance, **kwargs):
-    if instance.user_type == 'STUDENT':
-        instance.student_profile.save()
-    elif instance.user_type == 'MANAGER':
-        instance.manager_profile.save()
+def save_user_profile(sender, instance, created, **kwargs):
+    if not created:  # Только если пользователь уже существует
+        try:
+            if instance.user_type == 'STUDENT' and hasattr(instance, 'student_profile'):
+                instance.student_profile.save()
+            elif instance.user_type == 'MANAGER' and hasattr(instance, 'manager_profile'):
+                instance.manager_profile.save()
+        except (StudentProfile.DoesNotExist, ManagerProfile.DoesNotExist):
+            pass
 
 # Событие/мероприятие
 class Event(models.Model):
