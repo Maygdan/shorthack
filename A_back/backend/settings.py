@@ -36,7 +36,7 @@ SIMPLE_JWT = {
 }
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
+    
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework', 
     'corsheaders',
-    'mini',
+    "mini",
+    'django.contrib.admin',
     
 ]
 
@@ -90,6 +91,7 @@ DATABASES = {
     }
 }
 
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -137,3 +139,10 @@ CORS_ORIGIN_ALLOW_ALL = False
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWS_CREDENTIALS = True
+
+AUTH_USER_MODEL = 'mini.CustomUser'
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",  
+    "http://127.0.0.1:5173",
+]
