@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-
+from .models import Minigames,Quests,Quiz,Manager,Student,Games
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model=User
@@ -10,3 +10,4 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self,validated_data):
         user=User.objects.create_user(**validated_data)
         return user
+    
