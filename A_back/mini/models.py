@@ -11,7 +11,7 @@ class CustomUser(AbstractUser):
         ('MANAGER', 'Manager'),
     )
     user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES, default='STUDENT')
-    phone = models.CharField(max_length=20, blank=True, null=True)
+    phone = models.CharField(max_length=20, unique=True)
     university = models.CharField(max_length=255, blank=True, null=True)
     telegram_id = models.CharField(max_length=50, blank=True, null=True)
     interests = models.TextField(blank=True, null=True)

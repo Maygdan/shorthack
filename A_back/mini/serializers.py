@@ -9,16 +9,29 @@ class UserSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
     
     def create(self, validated_data):
+        phone = validated_data.get('phone', '').strip()
+        # Очищаем телефон от всех символов кроме цифр
+        phone_clean = ''.join(filter(str.isdigit, phone))
+        if phone_clean.startswith('7') or phone_clean.startswith('8'):
+            phone_clean = phone_clean[1:]
+        
+        # Генерируем username из телефона, если не указан
+        username = validated_data.get('username') or f"user_{phone_clean}"
+        
         user = CustomUser.objects.create_user(
-            username=validated_data['username'],
-            email=validated_data['email'],
-            password=validated_data['password'],
+            username=username,
+            email=validated_data.get('email', f"{username}@x5.ru"),
+            password=validated_data.get('password', None),
             user_type=validated_data.get('user_type', 'STUDENT'),
-            phone=validated_data.get('phone', ''),
+            phone=phone_clean,
             university=validated_data.get('university', ''),
             telegram_id=validated_data.get('telegram_id', ''),
             interests=validated_data.get('interests', '')
         )
+        # Устанавливаем unusable password, если пароль не указан
+        if not validated_data.get('password'):
+            user.set_unusable_password()
+            user.save()
         return user
 
 class StudentProfileSerializer(serializers.ModelSerializer):
