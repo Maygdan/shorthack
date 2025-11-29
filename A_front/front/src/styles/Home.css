@@ -1,25 +1,204 @@
-.home-container {
+/* Home page в стиле X5 */
+
+.home-wrapper {
   min-height: 100vh;
+  background-color: var(--x5-white);
+}
+
+/* Header в стиле X5 */
+.home-header {
+  background-color: var(--x5-white);
+  border-bottom: 1px solid #E0E0E0;
+  padding: 20px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-sm);
+}
+
+.home-header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin: 0;
-  padding: 0;
+}
+
+.home-logo {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--x5-green);
+  letter-spacing: -1px;
+}
+
+.home-nav {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+}
+
+.home-nav a {
+  color: var(--x5-black);
+  font-size: 16px;
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+.home-nav a:hover {
+  color: var(--x5-green);
+}
+
+.home-logout-btn {
+  padding: 10px 24px;
+  background-color: transparent;
+  color: var(--x5-green);
+  border: 2px solid var(--x5-green);
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.home-logout-btn:hover {
+  background-color: var(--x5-green);
+  color: var(--x5-white);
+}
+
+/* Hero секция */
+.home-hero {
+  background: linear-gradient(135deg, var(--x5-green-light) 0%, var(--x5-white) 100%);
+  padding: 120px 20px;
+  text-align: center;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.home-hero-content {
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .home-title {
-  font-size: 3rem;
+  font-size: 56px;
   font-weight: 700;
-  text-align: center;
-  letter-spacing: 1px;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
-  animation: fadeInUp 1s ease-out;
+  color: var(--x5-black);
+  margin-bottom: 24px;
+  line-height: 1.2;
+  animation: slideUp 0.8s ease-out;
 }
 
-@keyframes fadeInUp {
+.home-title .highlight {
+  color: var(--x5-green);
+}
+
+.home-subtitle {
+  font-size: 20px;
+  color: var(--x5-gray);
+  margin-bottom: 40px;
+  line-height: 1.6;
+  animation: slideUp 0.8s ease-out 0.2s both;
+}
+
+.home-cta {
+  display: inline-flex;
+  gap: 16px;
+  animation: slideUp 0.8s ease-out 0.4s both;
+}
+
+/* Карточки возможностей */
+.home-features {
+  padding: 80px 20px;
+  background-color: var(--x5-white);
+}
+
+.home-features-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.home-features-title {
+  text-align: center;
+  font-size: 42px;
+  margin-bottom: 60px;
+  color: var(--x5-black);
+}
+
+.home-features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 32px;
+}
+
+.home-feature-card {
+  background-color: var(--x5-white);
+  border: 1px solid #E0E0E0;
+  border-radius: 8px;
+  padding: 40px 32px;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.home-feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--x5-green);
+}
+
+.home-feature-icon {
+  width: 64px;
+  height: 64px;
+  background-color: var(--x5-green-light);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  margin-bottom: 24px;
+}
+
+.home-feature-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--x5-black);
+}
+
+.home-feature-description {
+  font-size: 16px;
+  color: var(--x5-gray);
+  line-height: 1.6;
+}
+
+/* Footer */
+.home-footer {
+  background-color: var(--x5-black);
+  color: var(--x5-white);
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.home-footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.home-footer p {
+  color: #B0B0B0;
+  font-size: 14px;
+}
+
+/* Анимации */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
   from {
     opacity: 0;
     transform: translateY(30px);
@@ -30,9 +209,58 @@
   }
 }
 
-@media (max-width: 768px) {
+/* Адаптивность */
+@media (max-width: 1024px) {
   .home-title {
-    font-size: 2rem;
-    padding: 0 1rem;
+    font-size: 42px;
+  }
+  
+  .home-features-title {
+    font-size: 36px;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-nav {
+    gap: 16px;
+  }
+  
+  .home-hero {
+    padding: 80px 20px;
+  }
+  
+  .home-title {
+    font-size: 32px;
+  }
+  
+  .home-subtitle {
+    font-size: 18px;
+  }
+  
+  .home-features {
+    padding: 60px 20px;
+  }
+  
+  .home-features-title {
+    font-size: 28px;
+    margin-bottom: 40px;
+  }
+  
+  .home-features-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  
+  .home-cta {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .home-cta .btn {
+    width: 100%;
+  }
+  
+  .home-logo {
+    font-size: 24px;
   }
 }

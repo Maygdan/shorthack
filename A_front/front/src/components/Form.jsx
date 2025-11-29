@@ -1,8 +1,12 @@
 import { useState } from "react";
 import api from "../api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 import "../styles/Form.css";
+<<<<<<< HEAD
+=======
+import "../styles/Global.css";
+>>>>>>> eb86eb7c2ced0f65c8cf6c85700bda5d0984477e
 import LoadingIndicator from "./LoadingIndicator";
 
 function Form({ route, method, onLogin }) {
@@ -13,7 +17,11 @@ function Form({ route, method, onLogin }) {
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
+<<<<<<< HEAD
     const name = method === "login" ? "Login" : "Register";
+=======
+    const name = method === "login" ? "Вход" : "Регистрация";
+>>>>>>> eb86eb7c2ced0f65c8cf6c85700bda5d0984477e
     const isLogin = method === "login";
 
     const handleSubmit = async (e) => {
@@ -78,6 +86,7 @@ function Form({ route, method, onLogin }) {
     };
 
     return (
+<<<<<<< HEAD
         <form onSubmit={handleSubmit} className="form-container">
             <h1>{name}</h1>
             
@@ -124,6 +133,77 @@ function Form({ route, method, onLogin }) {
                 </p>
             )}
         </form>
+=======
+        <div className="form-wrapper">
+            <div className="form-container">
+                <div className="form-header">
+                    <div className="form-logo">X5</div>
+                    <h1 className="form-title">{name}</h1>
+                    <p className="form-subtitle">
+                        {isLogin 
+                            ? "Войдите в свой аккаунт" 
+                            : "Создайте новый аккаунт"}
+                    </p>
+                </div>
+
+                <form onSubmit={handleSubmit} className="form-body">
+                    <div className="form-group">
+                        <label className="form-label" htmlFor="username">
+                            Имя пользователя
+                        </label>
+                        <input
+                            id="username"
+                            className="form-input"
+                            type="text"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            placeholder="Введите имя пользователя"
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label className="form-label" htmlFor="password">
+                            Пароль
+                        </label>
+                        <input
+                            id="password"
+                            className="form-input"
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="Введите пароль"
+                            required
+                        />
+                    </div>
+
+                    {loading && <LoadingIndicator />}
+
+                    <button 
+                        className="form-button" 
+                        type="submit"
+                        disabled={loading}
+                    >
+                        {loading ? "Загрузка..." : name}
+                    </button>
+                </form>
+
+                <div className="form-footer">
+                    {isLogin ? (
+                        <p>
+                            Нет аккаунта?{" "}
+                            <Link to="/register">Зарегистрироваться</Link>
+                        </p>
+                    ) : (
+                        <p>
+                            Уже есть аккаунт?{" "}
+                            <Link to="/login">Войти</Link>
+                        </p>
+                    )}
+                </div>
+            </div>
+        </div>
+>>>>>>> eb86eb7c2ced0f65c8cf6c85700bda5d0984477e
     );
 }
 
