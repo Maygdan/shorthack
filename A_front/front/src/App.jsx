@@ -8,6 +8,9 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Events from "./pages/Events";
 import Event from "./pages/Event";
 import Analytics from "./pages/Analytics";
+import MerchStore from "./pages/MerchStore";
+import Feedback from "./pages/Feedback";
+import PointsSystem from "./pages/PointsSystem";
 
 function Logout() {
   localStorage.clear();
@@ -52,6 +55,30 @@ function App() {
           element={
             <ProtectedRoute>
               <Analytics />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/merch"
+          element={
+            <ProtectedRoute>
+              <MerchStore />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/feedback"
+          element={
+            <ProtectedRoute>
+              <Feedback />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/points"
+          element={
+            <ProtectedRoute>
+              <PointsSystem />
             </ProtectedRoute>
           }
         />

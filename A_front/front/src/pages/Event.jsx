@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { startEvent, submitQuiz, submitFeedback } from '../api';
+import Navigation from '../components/Navigation';
+import '../styles/Event.css';
 
 function Event() {
   const { id } = useParams();
@@ -11,8 +13,10 @@ function Event() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState([]);
   const [quizCompleted, setQuizCompleted] = useState(false);
+  const [quizResult, setQuizResult] = useState(null);
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
   const [feedback, setFeedback] = useState({ rating: 5, comment: '' });
+  const [minigameStarted, setMinigameStarted] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -50,14 +54,11 @@ function Event() {
   const submitQuizHandler = async () => {
     try {
       const result = await submitQuiz(id, answers);
-      
-      if (result.passed) {
-        setQuizCompleted(true);
-      }
-      
-      alert(`Quiz completed! Your score: ${result.score}%`);
+      setQuizResult(result);
+      setQuizCompleted(true);
     } catch (error) {
-      alert('Error submitting quiz. Please try again.');
+      const errorMessage = error.response?.data?.error || 'Не удалось отправить квиз. Попробуйте позже.';
+      alert(errorMessage);
     }
   };
 
@@ -71,24 +72,98 @@ function Event() {
     }
   };
 
-  if (loading) return <div className="loading-container">Loading event...</div>;
-  if (error) return <div className="error-message">{error}</div>;
-  if (!event) return <div>Event not found</div>;
+  const getEventTypeLabel = (type) => {
+    const types = {
+      'QUIZ': 'Квиз',
+      'MINIGAME': 'Мини-игра',
+      'QUEST': 'Квест',
+      'PHOTO': 'Фото-челлендж'
+    };
+    return types[type] || type;
+  };
+
+  if (loading) {
+    return (
+      <div>
+        <Navigation />
+        <div className="event-container">
+          <div className="loading-container">
+            <div className="loading-spinner"></div>
+            <p>Загрузка мероприятия...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div>
+        <Navigation />
+        <div className="event-container">
+          <div className="error-message">
+            <h3>Ошибка</h3>
+            <p>{error}</p>
+            <button onClick={() => navigate('/events')} className="btn primary-btn">
+              Вернуться к мероприятиям
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!event) {
+    return (
+      <div>
+        <Navigation />
+        <div className="event-container">
+          <div className="error-message">
+            <h3>Мероприятие не найдено</h3>
+            <button onClick={() => navigate('/events')} className="btn primary-btn">
+              Вернуться к мероприятиям
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="event-container">
-      <h1>{event.title}</h1>
-      <p>{event.description}</p>
-      <p>Type: {event.event_type}</p>
-      <p>Points: {event.points}</p>
+    <div>
+      <Navigation />
+      <div className="event-container">
+        <div className="event-header">
+          <div className="event-badge">
+            {getEventTypeLabel(event.event_type)}
+          </div>
+          <h1>{event.title}</h1>
+          <p className="event-description">{event.description}</p>
+          <div className="event-meta">
+            <div className="event-meta-item">
+              <span>Тип: {getEventTypeLabel(event.event_type)}</span>
+            </div>
+            <div className="event-meta-item">
+              <span>{event.points} баллов</span>
+            </div>
+          </div>
+        </div>
       
       {event.event_type === 'QUIZ' && quiz && !quizCompleted && (
         <div className="quiz-container">
-          <h2>Quiz</h2>
+          <div className="quiz-progress">
+            <div 
+              className="quiz-progress-bar" 
+              style={{ width: `${((currentQuestion + 1) / quiz.questions.length) * 100}%` }}
+            ></div>
+          </div>
+          
           {currentQuestion < quiz.questions.length ? (
             <div className="question-container">
-              <h3>Question {currentQuestion + 1}</h3>
-              <p>{quiz.questions[currentQuestion].question_text}</p>
+              <div className="question-number">
+                Вопрос {currentQuestion + 1} из {quiz.questions.length}
+              </div>
+              <h3 className="question-text">{quiz.questions[currentQuestion].question_text}</h3>
               <div className="answers-container">
                 {quiz.questions[currentQuestion].answers.map(answer => (
                   <button
@@ -102,33 +177,93 @@ function Event() {
               </div>
               <div className="quiz-controls">
                 {currentQuestion > 0 && (
-                  <button onClick={() => setCurrentQuestion(currentQuestion - 1)}>
-                    Previous
+                  <button 
+                    onClick={() => setCurrentQuestion(currentQuestion - 1)}
+                    className="btn btn-secondary"
+                  >
+                    Назад
                   </button>
                 )}
                 {currentQuestion < quiz.questions.length - 1 ? (
-                  <button onClick={() => setCurrentQuestion(currentQuestion + 1)}>
-                    Next
+                  <button 
+                    onClick={() => setCurrentQuestion(currentQuestion + 1)}
+                    className="btn primary-btn"
+                    style={{ marginLeft: 'auto' }}
+                  >
+                    Далее
                   </button>
                 ) : (
-                  <button onClick={submitQuizHandler} className="btn primary-btn">
-                    Submit Quiz
+                  <button 
+                    onClick={submitQuizHandler} 
+                    className="btn primary-btn"
+                    disabled={answers.length < quiz.questions.length}
+                    style={{ marginLeft: 'auto' }}
+                  >
+                    Завершить квиз
                   </button>
                 )}
               </div>
             </div>
+          ) : null}
+        </div>
+      )}
+
+      {quizCompleted && quizResult && (
+        <div className="quiz-results">
+          <h2>Квиз завершен!</h2>
+          <div className="quiz-score">{quizResult.score}%</div>
+          <p>
+            Правильных ответов: {quizResult.correct_count} из {quizResult.total_questions}
+          </p>
+          {quizResult.passed ? (
+            <div>
+              <p style={{ color: 'var(--x5-green-dark)', fontWeight: 700, marginTop: 16 }}>
+                ✓ Вы успешно прошли квиз!
+              </p>
+              <p style={{ marginTop: 8 }}>
+                Вы заработали {event.points} баллов!
+              </p>
+              <p style={{ marginTop: 8, fontSize: 16 }}>
+                Ваш текущий баланс: {quizResult.current_points} баллов
+              </p>
+            </div>
           ) : (
-            <div className="quiz-completed">
-              <h2>Quiz Completed!</h2>
-              <p>Thank you for completing the quiz!</p>
+            <p style={{ color: 'var(--x5-red)', fontWeight: 700, marginTop: 16 }}>
+              К сожалению, вы не прошли квиз. Попробуйте еще раз!
+            </p>
+          )}
+        </div>
+      )}
+      
+      {event.event_type === 'MINIGAME' && event.minigame && (
+        <div className="minigame-container">
+          {!minigameStarted ? (
+            <div className="minigame-start">
+              <h2>Мини-игра: {event.title}</h2>
+              <p className="minigame-instructions">{event.minigame.instructions}</p>
+              <button 
+                onClick={() => setMinigameStarted(true)}
+                className="btn primary-btn"
+              >
+                Начать игру
+              </button>
+            </div>
+          ) : (
+            <div className="minigame-content">
+              <h2>Игра в процессе</h2>
+              <p>Здесь будет реализация мини-игры</p>
+              <p className="minigame-instructions">{event.minigame.instructions}</p>
             </div>
           )}
         </div>
       )}
       
-      {quizCompleted && !feedbackSubmitted && (
+      {quizCompleted && quizResult?.passed && !feedbackSubmitted && (
         <div className="feedback-container">
-          <h2>Provide Feedback</h2>
+          <h3>Оставьте отзыв</h3>
+          <p style={{ marginBottom: 24, color: 'var(--x5-gray)' }}>
+            Поделитесь своими впечатлениями о мероприятии
+          </p>
           <div className="rating-container">
             {[1, 2, 3, 4, 5].map(star => (
               <span
@@ -142,25 +277,48 @@ function Event() {
           </div>
           <textarea
             className="feedback-textarea"
-            placeholder="Your feedback..."
+            placeholder="Ваш отзыв..."
             value={feedback.comment}
             onChange={(e) => setFeedback({...feedback, comment: e.target.value})}
           />
-          <button onClick={submitFeedbackHandler} className="btn primary-btn">
-            Submit Feedback
-          </button>
+          <div style={{ display: 'flex', gap: 16, justifyContent: 'flex-end' }}>
+            <button 
+              onClick={() => setFeedbackSubmitted(true)}
+              className="btn btn-secondary"
+            >
+              Пропустить
+            </button>
+            <button 
+              onClick={submitFeedbackHandler} 
+              className="btn primary-btn"
+            >
+              Отправить отзыв
+            </button>
+          </div>
         </div>
       )}
       
       {feedbackSubmitted && (
         <div className="thank-you-container">
-          <h2>Thank You!</h2>
-          <p>Your feedback has been submitted.</p>
-          <button onClick={() => navigate('/')} className="btn">
-            Return to Home
-          </button>
+          <h2>Спасибо!</h2>
+          <p>Ваш отзыв был отправлен.</p>
+          <div style={{ display: 'flex', gap: 16, marginTop: 24 }}>
+            <button 
+              onClick={() => navigate('/events')} 
+              className="btn primary-btn"
+            >
+              К мероприятиям
+            </button>
+            <button 
+              onClick={() => navigate('/')} 
+              className="btn btn-secondary"
+            >
+              На главную
+            </button>
+          </div>
         </div>
       )}
+      </div>
     </div>
   );
 }

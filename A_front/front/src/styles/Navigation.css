@@ -1,0 +1,126 @@
+/* Навигация в стиле X5 */
+
+.navigation-header {
+  background-color: var(--x5-white);
+  border-bottom: 1px solid var(--x5-gray-light);
+  padding: 20px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.95);
+}
+
+.navigation-content {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navigation-logo {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+}
+
+.navigation-nav {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+}
+
+.navigation-nav a {
+  color: var(--x5-black);
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition-fast);
+  position: relative;
+  padding: 8px 0;
+}
+
+.navigation-nav a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background-color: var(--x5-green);
+  transition: width 0.3s ease;
+  border-radius: var(--radius-full);
+}
+
+.navigation-nav a:hover {
+  color: var(--x5-green);
+}
+
+.navigation-nav a:hover::after {
+  width: 100%;
+}
+
+.navigation-points {
+  padding: 8px 16px;
+  background: linear-gradient(135deg, var(--x5-green) 0%, var(--x5-green-dark) 100%);
+  border-radius: var(--radius-full);
+  color: var(--x5-white);
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.navigation-logout-btn {
+  padding: 12px 28px;
+  background-color: transparent;
+  color: var(--x5-green);
+  border: 2px solid var(--x5-green);
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  letter-spacing: 0.3px;
+  font-family: var(--font-primary);
+}
+
+.navigation-logout-btn:hover {
+  background-color: var(--x5-green);
+  color: var(--x5-white);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.navigation-logout-btn:active {
+  transform: translateY(0);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .navigation-content {
+    padding: 0 16px;
+  }
+  
+  .navigation-nav {
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  
+  .navigation-nav a {
+    font-size: 14px;
+  }
+  
+  .navigation-points {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+  
+  .navigation-logout-btn {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+}
+

@@ -20,12 +20,9 @@ function Home() {
         <div className="home-header-content">
           <X5Logo size="medium" />
           <nav className="home-nav">
-            {userRole === 'STUDENT' && (
-              <a href="/events">Мероприятия</a>
-            )}
-            {userRole === 'MANAGER' && (
-              <a href="/analytics">Аналитика</a>
-            )}
+            <a href="/events">Мероприятия</a>
+            <a href="/merch">Магазин мерча</a>
+            <a href="/analytics">Аналитика</a>
             <button onClick={handleLogout} className="home-logout-btn">
               Выход
             </button>
@@ -45,34 +42,12 @@ function Home() {
             Развивайтесь вместе с нами!
           </p>
           <div className="home-cta">
-            {userRole === 'STUDENT' ? (
-              <>
-                <button onClick={() => navigate('/events')} className="btn btn-primary btn-large">
-                  Перейти к мероприятиям
-                </button>
-                <button onClick={() => navigate('/events')} className="btn btn-secondary btn-large">
-                  Мой профиль
-                </button>
-              </>
-            ) : userRole === 'MANAGER' ? (
-              <>
-                <button onClick={() => navigate('/analytics')} className="btn btn-primary btn-large">
-                  Аналитика
-                </button>
-                <button onClick={() => navigate('/events')} className="btn btn-secondary btn-large">
-                  Мероприятия
-                </button>
-              </>
-            ) : (
-              <>
-                <button onClick={() => navigate('/events')} className="btn btn-primary btn-large">
-                  Я студент
-                </button>
-                <button onClick={() => navigate('/analytics')} className="btn btn-secondary btn-large">
-                  Я менеджер
-                </button>
-              </>
-            )}
+            <button onClick={() => navigate('/events')} className="btn btn-primary btn-large">
+              Перейти к мероприятиям
+            </button>
+            <button onClick={() => navigate('/analytics')} className="btn btn-secondary btn-large">
+              Аналитика
+            </button>
           </div>
         </div>
       </section>
@@ -86,7 +61,11 @@ function Home() {
           </p>
           
           <div className="home-features-grid">
-            <div className="home-feature-card">
+            <div 
+              className="home-feature-card" 
+              onClick={() => navigate('/events?type=QUIZ')}
+              style={{ cursor: 'pointer' }}
+            >
               <div className="home-feature-icon">🎯</div>
               <h3 className="home-feature-title">Интерактивные квизы</h3>
               <p className="home-feature-description">
@@ -94,7 +73,11 @@ function Home() {
               </p>
             </div>
 
-            <div className="home-feature-card">
+            <div 
+              className="home-feature-card" 
+              onClick={() => navigate('/events?type=MINIGAME')}
+              style={{ cursor: 'pointer' }}
+            >
               <div className="home-feature-icon">🎮</div>
               <h3 className="home-feature-title">Мини-игры</h3>
               <p className="home-feature-description">
@@ -102,7 +85,11 @@ function Home() {
               </p>
             </div>
 
-            <div className="home-feature-card">
+            <div 
+              className="home-feature-card" 
+              onClick={() => navigate('/points')}
+              style={{ cursor: 'pointer' }}
+            >
               <div className="home-feature-icon">⭐</div>
               <h3 className="home-feature-title">Система баллов</h3>
               <p className="home-feature-description">
@@ -110,7 +97,11 @@ function Home() {
               </p>
             </div>
 
-            <div className="home-feature-card">
+            <div 
+              className="home-feature-card" 
+              onClick={() => navigate('/analytics')}
+              style={{ cursor: 'pointer' }}
+            >
               <div className="home-feature-icon">📊</div>
               <h3 className="home-feature-title">Аналитика</h3>
               <p className="home-feature-description">
@@ -118,7 +109,11 @@ function Home() {
               </p>
             </div>
 
-            <div className="home-feature-card">
+            <div 
+              className="home-feature-card" 
+              onClick={() => navigate('/feedback')}
+              style={{ cursor: 'pointer' }}
+            >
               <div className="home-feature-icon">💬</div>
               <h3 className="home-feature-title">Обратная связь</h3>
               <p className="home-feature-description">

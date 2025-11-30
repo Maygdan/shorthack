@@ -9,7 +9,6 @@ function Form({ route, method, onLogin }) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState(""); // Добавляем поле email для регистрации
-    const [userType, setUserType] = useState("STUDENT"); // Добавляем выбор типа пользователя
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
@@ -42,12 +41,11 @@ function Form({ route, method, onLogin }) {
                 
                 navigate("/");
             } else {
-                // Для регистрации отправляем username, password, email и user_type
+                // Для регистрации отправляем username, password, email
                 res = await api.post(route, { 
                     username, 
                     password, 
-                    email,
-                    user_type: userType 
+                    email
                 });
                 
                 // После регистрации также сохраняем токены и логиним пользователя
@@ -124,18 +122,6 @@ function Form({ route, method, onLogin }) {
                     placeholder="Email"
                     required
                 />
-            )}
-            
-            {!isLogin && (
-                <select 
-                    className="form-input"
-                    value={userType}
-                    onChange={(e) => setUserType(e.target.value)}
-                    required
-                >
-                    <option value="STUDENT">Student</option>
-                    <option value="MANAGER">Manager</option>
-                </select>
             )}
             
             <input

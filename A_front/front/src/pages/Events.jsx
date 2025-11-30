@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { getEvents } from '../api';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import Navigation from '../components/Navigation';
 import '../styles/Events.css';
 
 function Events() {
   const [events, setEvents] = useState([]);
+  const [filteredEvents, setFilteredEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const filterType = searchParams.get('type');
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -31,6 +35,16 @@ function Events() {
     fetchEvents();
   }, []);
 
+  // Фильтрация событий по типу
+  useEffect(() => {
+    if (filterType) {
+      const filtered = events.filter(event => event.event_type === filterType);
+      setFilteredEvents(filtered);
+    } else {
+      setFilteredEvents(events);
+    }
+  }, [events, filterType]);
+
   const getEventTypeLabel = (type) => {
     const types = {
       'QUIZ': 'Квиз',
@@ -43,10 +57,13 @@ function Events() {
 
   if (loading) {
     return (
-      <div className="events-container">
-        <div className="loading-container">
-          <div className="loading-spinner"></div>
-          <p>Загрузка мероприятий...</p>
+      <div>
+        <Navigation />
+        <div className="events-container">
+          <div className="loading-container">
+            <div className="loading-spinner"></div>
+            <p>Загрузка мероприятий...</p>
+          </div>
         </div>
       </div>
     );
@@ -54,25 +71,38 @@ function Events() {
 
   if (error) {
     return (
-      <div className="events-container">
-        <div className="error-message">
-          <h3>Ошибка</h3>
-          <p>{error}</p>
+      <div>
+        <Navigation />
+        <div className="events-container">
+          <div className="error-message">
+            <h3>Ошибка</h3>
+            <p>{error}</p>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="events-container">
-      <div className="events-header">
-        <h1>Доступные мероприятия</h1>
+    <div>
+      <Navigation />
+      <div className="events-container">
+        <div className="events-header">
+        <h1>
+          {filterType === 'MINIGAME' ? 'Мини-игры' : 
+           filterType === 'QUIZ' ? 'Квизы' :
+           filterType === 'QUEST' ? 'Квесты' :
+           filterType === 'PHOTO' ? 'Фото-челленджи' :
+           'Доступные мероприятия'}
+        </h1>
         <p className="events-subtitle">
-          Выберите мероприятие и начните зарабатывать баллы
+          {filterType === 'MINIGAME' 
+            ? 'Выберите мини-игру и начните зарабатывать баллы'
+            : 'Выберите мероприятие и начните зарабатывать баллы'}
         </p>
       </div>
       
-      {events.length === 0 ? (
+      {(filterType ? filteredEvents : events).length === 0 ? (
         <div className="events-empty">
           <div className="events-empty-icon">📅</div>
           <h3>Нет доступных мероприятий</h3>
@@ -80,7 +110,7 @@ function Events() {
         </div>
       ) : (
         <div className="events-grid">
-          {events.map(event => (
+          {(filterType ? filteredEvents : events).map(event => (
             <div key={event.id} className="event-card">
               <div className="event-card-badge">
                 {getEventTypeLabel(event.event_type)}
@@ -116,6 +146,7 @@ function Events() {
           ))}
         </div>
       )}
+      </div>
     </div>
   );
 }

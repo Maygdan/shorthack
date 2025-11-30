@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import CustomUser, StudentProfile, ManagerProfile, Event, Quiz, QuizQuestion, QuizAnswer
-from .models import Minigame, EventParticipation, Feedback, PointTransaction
+from .models import Minigame, EventParticipation, Feedback, PointTransaction, Merchandise, MerchOrder
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -89,9 +89,11 @@ class EventParticipationSerializer(serializers.ModelSerializer):
         fields = ['id', 'event', 'completed', 'score', 'completed_at', 'first_viewed']
 
 class FeedbackSerializer(serializers.ModelSerializer):
+    event = EventSerializer(read_only=True)
+    
     class Meta:
         model = Feedback
-        fields = ['id', 'rating', 'comment', 'created_at']
+        fields = ['id', 'event', 'rating', 'comment', 'created_at']
 
 class PointTransactionSerializer(serializers.ModelSerializer):
     event = EventSerializer(read_only=True)
@@ -99,3 +101,19 @@ class PointTransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = PointTransaction
         fields = ['id', 'points', 'transaction_type', 'description', 'timestamp', 'event']
+
+class MerchandiseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Merchandise
+        fields = ['id', 'name', 'description', 'merch_type', 'points_cost', 'image_url', 
+                 'is_available', 'stock_quantity', 'created_at', 'updated_at']
+
+class MerchOrderSerializer(serializers.ModelSerializer):
+    merchandise = MerchandiseSerializer(read_only=True)
+    student = UserSerializer(read_only=True)
+    
+    class Meta:
+        model = MerchOrder
+        fields = ['id', 'student', 'merchandise', 'quantity', 'points_spent', 'status', 
+                 'delivery_address', 'phone', 'notes', 'created_at', 'updated_at']
+        read_only_fields = ['student', 'points_spent', 'created_at', 'updated_at']

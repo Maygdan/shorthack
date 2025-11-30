@@ -13,4 +13,15 @@ urlpatterns = [
     
     path('analytics/', views.ManagerAnalyticsView.as_view(), name='manager-analytics'),
     path('analytics/<int:event_id>/', views.ManagerAnalyticsView.as_view(), name='event-analytics'),
+    
+    # Мерч
+    path('merchandise/', views.MerchandiseListView.as_view(), name='merchandise-list'),
+    path('merchandise/<int:pk>/', views.MerchandiseDetailView.as_view(), name='merchandise-detail'),
+    path('merchandise/<int:merch_id>/purchase/', views.PurchaseMerchView.as_view(), name='purchase-merch'),
+    path('orders/', views.MerchOrderListView.as_view(), name='merch-orders-list'),
+    path('orders/<int:pk>/', views.MerchOrderDetailView.as_view(), name='merch-order-detail'),
+    
+    # Обратная связь
+    path('completed-events/', views.CompletedEventsView.as_view(), name='completed-events'),
+    path('my-feedbacks/', views.MyFeedbacksView.as_view(), name='my-feedbacks'),
 ]

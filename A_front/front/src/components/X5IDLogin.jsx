@@ -26,13 +26,37 @@ function X5IDLogin({ onLogin }) {
         }
 
         try {
+            console.log("Sending login request with phone:", phone);
+            console.log("API base URL:", api.defaults.baseURL);
+            
             // Отправляем только телефон
             const res = await api.post("/api/login/", { 
                 phone: phone
             });
             
-            localStorage.setItem(ACCESS_TOKEN, res.data.access);
-            localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
+            console.log("Login response:", res.data);
+            
+            if (!res.data.access || !res.data.refresh) {
+                throw new Error("Токены не получены от сервера");
+            }
+            
+            // Убираем возможные пробелы и сохраняем токены
+            const accessToken = String(res.data.access).trim();
+            const refreshToken = String(res.data.refresh).trim();
+            
+            // Проверяем формат JWT токена (должен содержать 3 части, разделенные точками)
+            if (accessToken.split('.').length !== 3) {
+                throw new Error("Неверный формат токена доступа");
+            }
+            if (refreshToken.split('.').length !== 3) {
+                throw new Error("Неверный формат токена обновления");
+            }
+            
+            console.log("Access token length:", accessToken.length);
+            console.log("Access token format valid:", accessToken.split('.').length === 3);
+            
+            localStorage.setItem(ACCESS_TOKEN, accessToken);
+            localStorage.setItem(REFRESH_TOKEN, refreshToken);
             
             if (res.data.user) {
                 localStorage.setItem("user", JSON.stringify(res.data.user));
@@ -43,8 +67,22 @@ function X5IDLogin({ onLogin }) {
             navigate("/");
         } catch (error) {
             console.error("Authentication error:", error);
+            console.error("Error response:", error.response);
+            console.error("Error message:", error.message);
+            console.error("Error config:", error.config);
+            
             if (error.response?.data?.error) {
                 setError(error.response.data.error);
+            } else if (error.response?.data?.detail) {
+                setError(error.response.data.detail);
+            } else if (error.message) {
+                setError(error.message);
+            } else if (error.response?.status === 500) {
+                setError("Ошибка сервера. Попробуйте позже.");
+            } else if (error.response?.status === 404) {
+                setError("Сервер не найден. Проверьте подключение.");
+            } else if (error.response?.status === 0 || !error.response) {
+                setError("Не удалось подключиться к серверу. Проверьте, что сервер запущен на http://localhost:8000");
             } else {
                 setError("Ошибка при входе. Попробуйте еще раз.");
             }
